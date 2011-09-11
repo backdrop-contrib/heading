@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file
+ * Allows to wrap the content of text fields in HTML heading tags.
+ */
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function heading_field_formatter_info() {
+  return array(
+    'heading' => array(
+      'label' => t('Heading'),
+      'description' => t('Display the text wrapped in a HTML heading tag.'),
+      // @todo Should other field types (list (text), etc.) be allowed as well?
+      'field types' => array('text', 'text_long', 'text_with_summary'),
+      'settings' => array(
+        'tag' => 'h2',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function heading_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $element = array();
+  if ($display['type'] = 'heading') {
+    $element['tag'] = array(
+      '#type' => 'select',
+      '#title' => t('Heading level'),
+      '#options' => array(
+        'h1' => '1',
+        'h2' => '2',
+        'h3' => '3',
+        'h4' => '4',
+        'h5' => '5',
+        'h6' => '6',
+      ),
+      '#default_value' => $settings['tag'],
+      '#required' => TRUE,
+    );
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function heading_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = '';
+  if ($display['type'] == 'heading') {
+    $summary .= t('Heading level: @level', array('@level' => substr($settings['tag'], 1)));
+  }
+  return $summary;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function heading_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $settings = $display['settings'];
+
+  $element = array();
+  if ($display['type'] == 'heading') {
+    $tag = $settings['tag'];
+    foreach ($items as $delta => $item) {
+      // @see text_field_formatter_view()
+      $output = _text_sanitize($instance, $langcode, $item, 'value');
+      $output = "<$tag>$output</$tag>";
+      $element[$delta] = array('#markup' => $output);
+    }
+  }
+  return $element;
+}
