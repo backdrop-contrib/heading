@@ -1,8 +1,7 @@
 <?php
-
 /**
  * @file
- * Allows to wrap the content of text fields in HTML heading tags.
+ * Field formatter to wrap a text field with a heading tag.
  */
 
 /**

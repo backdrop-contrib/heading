@@ -1,5 +1,5 @@
 name = Heading
-description = Allows to wrap the content of text fields in HTML heading tags.
-core = 7.x
+description = Field formatter to wrap a text field with a heading tag.
+backdrop = 1.x
 package = Fields
 dependencies[] = text
